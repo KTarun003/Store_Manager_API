@@ -1,22 +1,20 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+# Get Base Image (Full .NET Core SDK)
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
+WORKDIR /app
+
+# Copy csproj and restore
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish -c Release -o out
+
+# Generate runtime image
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 WORKDIR /app
 EXPOSE 80
-EXPOSE 443
-
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
-WORKDIR /src
-COPY ["StoreManager/StoreManager.csproj", "StoreManager/"]
-RUN dotnet restore "StoreManager/StoreManager.csproj"
-COPY . .
-WORKDIR "/src/StoreManager"
-RUN dotnet build "StoreManager.csproj" -c Release -o /app/build
-
-FROM build AS publish
-RUN dotnet publish "StoreManager.csproj" -c Release -o /app/publish
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "StoreManager.dll"]
+COPY --from=build-env /app/out .
+CMD ASPNETCORE_URLS=http://*:$PORT dotnet StoreManager.dll

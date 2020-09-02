@@ -19,7 +19,6 @@ namespace StoreManager.Models
         public virtual DbSet<Dashboard> Dashboard { get; set; }
         public virtual DbSet<Inventory> Inventory { get; set; }
         public virtual DbSet<Items> Items { get; set; }
-        public virtual DbSet<ItemsCost> ItemsCost { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -140,23 +139,7 @@ namespace StoreManager.Models
                     .HasConstraintName("inventory0");
             });
 
-            modelBuilder.Entity<ItemsCost>(entity =>
-            {
-                entity.ToTable("items_cost");
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Cost).HasColumnName("cost");
-
-                entity.HasOne(d => d.IdNavigation)
-                    .WithOne(p => p.ItemsCost)
-                    .HasForeignKey<ItemsCost>(d => d.Id)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("inventory_home");
-            });
+            
 
             OnModelCreatingPartial(modelBuilder);
         }
