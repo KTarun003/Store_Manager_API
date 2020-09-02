@@ -24,7 +24,12 @@ namespace StoreManager.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Bills>>> GetBills()
         {
-            return await _context.Bills.ToListAsync();
+            List<Bills> bills = _context.Bills.ToList();
+            foreach(Bills bill in bills)
+            {
+                BillItems(bill);
+            }
+            return bills.ToList();
         }
 
         // GET: api/Bills/5
@@ -37,7 +42,7 @@ namespace StoreManager.Controllers
             {
                 return NotFound();
             }
-
+            BillItems(bills);
             return bills;
         }
 
@@ -104,6 +109,16 @@ namespace StoreManager.Controllers
         private bool BillsExists(int id)
         {
             return _context.Bills.Any(e => e.Id == id);
+        }
+
+        private void BillItems(Bills bill)
+        {
+            ICollection<Items> items = _context.Items.Where(items => items.BillId == bill.Id).ToList(); ;
+            foreach(Items item in items)
+            {
+                bill.Items.Add(item);
+            }
+            
         }
     }
 }
