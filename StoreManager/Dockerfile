@@ -4,12 +4,9 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
 WORKDIR /app
 
-# Copy csproj and restore
-COPY *.csproj ./
-RUN dotnet restore
-
-# Copy everything else and build
+# Copy and restore
 COPY . ./
+RUN dotnet restore
 RUN dotnet publish -c Release -o out
 
 # Generate runtime image
