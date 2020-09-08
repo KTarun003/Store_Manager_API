@@ -52,7 +52,7 @@ namespace StoreManager.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutBills(int id, Bills bills)
         {
-            if (id != bills.Id)
+            if (id.Equals(bills.Id))
             {
                 return BadRequest();
             }
@@ -108,7 +108,7 @@ namespace StoreManager.Controllers
 
         private bool BillsExists(int id)
         {
-            return _context.Bills.Any(e => e.Id == id);
+            return _context.Bills.Any(e => e.Id.Equals(id));
         }
 
         private void BillItems(Bills bill)

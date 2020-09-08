@@ -10,7 +10,7 @@ namespace StoreManager.Models
             Items = new HashSet<Items>();
         }
 
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public float? Amount { get; set; }
         public int? Quantity { get; set; }
