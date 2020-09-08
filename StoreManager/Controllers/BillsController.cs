@@ -22,10 +22,10 @@ namespace StoreManager.Controllers
 
         // GET: api/Bills
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Bills>>> GetBills()
+        public ActionResult<IEnumerable<Bills>> GetAllBills()
         {
             List<Bills> bills = _context.Bills.ToList();
-            foreach(Bills bill in bills)
+            foreach (Bills bill in bills)
             {
                 BillItems(bill);
             }
